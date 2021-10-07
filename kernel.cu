@@ -8,8 +8,8 @@
 using namespace std;
 
 
-#define N (20000)
-#define k (50)
+#define N (200000)
+#define k (40)
 const int threadsPerBlock = 1024;
 //const int threads_qty = N / 2;
 
@@ -31,11 +31,20 @@ __global__ void sortKernel(int* dev_arr)
 }
 __global__ void get_arr(int* dev_arr) {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
+    int i = 0;
     if (idx < N) {
+        if (i == k / 2)
+            i = 0;
         if (idx % 2 == 0)
-            dev_arr[idx] = idx;
+        {
+            dev_arr[idx] = k - i;
+            i++;
+        }
         else
-            dev_arr[idx] = idx + 9;
+        {
+            dev_arr[idx] = k / 2 + i;
+            i++;
+        }
     }
 }
 
